@@ -1,10 +1,16 @@
-# HelloAgents智能旅行助手 🌍✈️
+# 智能旅行Agent 🌍✈️
+在HelloAgents智能旅行助手项目基础上，做了些修改，用来学习agent开发，基于Langchain Agent框架构建的智能旅行规划助手,集成高德地图MCP服务,提供个性化的旅行计划生成。
 
-基于HelloAgents框架构建的智能旅行规划助手,集成高德地图MCP服务,提供个性化的旅行计划生成。
+## ✨ 修改点
+- 项目基于Langchain1.2版本 Agent框架构建，替换HelloAgents框架
+- Agent自动调用高德地图MCP工具获取实时信息，替代HelloAgents的MCPTool
+- 增加异步处理，提高响应速度
+- 模型langchain_deepseek库, 调用DeepSeek的LLM模型
+
 
 ## ✨ 功能特点
 
-- 🤖 **AI驱动的旅行规划**: 基于HelloAgents框架的SimpleAgent,智能生成详细的多日旅程
+- 🤖 **AI驱动的旅行规划**: 基于Langchain Agent框架create_agent,智能生成详细的多日旅程
 - 🗺️ **高德地图集成**: 通过MCP协议接入高德地图服务,支持景点搜索、路线规划、天气查询
 - 🧠 **智能工具调用**: Agent自动调用高德地图MCP工具,获取实时POI、路线和天气信息
 - 🎨 **现代化前端**: Vue3 + TypeScript + Vite,响应式设计,流畅的用户体验
@@ -13,7 +19,7 @@
 ## 🏗️ 技术栈
 
 ### 后端
-- **框架**: HelloAgents (基于SimpleAgent)
+- **框架**: Lanchain
 - **API**: FastAPI
 - **MCP工具**: amap-mcp-server (高德地图)
 - **LLM**: 支持多种LLM提供商(OpenAI, DeepSeek等)
@@ -201,12 +207,13 @@ CC BY-NC-SA 4.0
 
 ## 🙏 致谢
 
+
+
 - [HelloAgents](https://github.com/datawhalechina/Hello-Agents) - 智能体教程
 - [HelloAgents框架](https://github.com/jjyaoao/HelloAgents) - 智能体框架
 - [高德地图开放平台](https://lbs.amap.com/) - 地图服务
 - [amap-mcp-server](https://github.com/sugarforever/amap-mcp-server) - 高德地图MCP服务器
 
 ---
-
-**HelloAgents智能旅行助手** - 让旅行计划变得简单而智能 🌈
+源代码引用来源：https://github.com/datawhalechina/hello-agents/tree/main/code/chapter13/helloagents-trip-planner
 
