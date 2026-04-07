@@ -22,6 +22,9 @@ loguru>=0.7.0
 
 # MCP相关
 langchain-mcp-adapters>=0.1.0
+langgraph>=0.2.0
+langchain>=0.3.0
+langchain-openai>=0.2.0
 uv>=0.8.0
 
 # 其他工具

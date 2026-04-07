@@ -11,6 +11,14 @@ from ..config import get_settings
 
 from langchain.agents import create_agent
 
+from langfuse import get_client
+from langfuse.langchain import CallbackHandler
+# Initialize Langfuse client
+langfuse = get_client()
+# Initialize Langfuse CallbackHandler for Langchain (tracing)
+langfuse_handler = CallbackHandler()
+config = {"callbacks": [langfuse_handler]}
+
 ATTRACTION_AGENT_PROMPT = """你是景点搜索专家。你的任务是根据城市和用户偏好搜索合适的景点。
 
 **重要提示:**
@@ -166,6 +174,7 @@ class BaseAgent:
         self.model = model
         self.system_prompt = system_prompt
         self.tools = tools if tools else []
+
         
         # 按照 langchain 1.0 以上的统一 create_agent 方式创建 Agent
         self.agent = create_agent(
@@ -175,8 +184,10 @@ class BaseAgent:
             tools=self.tools
         )
         
-    async def ainvoke(self, inputs: dict):
+    async def ainvoke(self, inputs: dict, config:dict=None):
         # 保持与系统原有调用的接口一致性
+        if config:
+            return await self.agent.ainvoke(inputs, config)
         return await self.agent.ainvoke(inputs)
 
 class AttractionAgent(BaseAgent):
@@ -277,7 +288,8 @@ class MultiAgentTripPlanner:
             print("📍 步骤1: 搜索景点...")
             attraction_query = self._build_attraction_query(request)
             attraction_result = await self.attraction_agent.ainvoke(
-                {"messages": [{"role": "user", "content": attraction_query}]}
+                {"messages": [{"role": "user", "content": attraction_query}]},
+                config=config
             )
             # 从结果中提取最后一条消息的内容
             if isinstance(attraction_result, dict) and "messages" in attraction_result:
@@ -290,7 +302,8 @@ class MultiAgentTripPlanner:
             print("🌤️  步骤2: 查询天气...")
             weather_query = f"请查询{request.city}的天气信息"
             weather_result = await self.weather_agent.ainvoke(
-                {"messages": [{"role": "user", "content": weather_query}]}
+                {"messages": [{"role": "user", "content": weather_query}]},
+                config=config
             )
             if isinstance(weather_result, dict) and "messages" in weather_result:
                 weather_response = weather_result["messages"][-1].content
@@ -302,7 +315,8 @@ class MultiAgentTripPlanner:
             print("🏨 步骤3: 搜索酒店...")
             hotel_query = f"请搜索{request.city}的{request.accommodation}酒店"
             hotel_result = await self.hotel_agent.ainvoke(
-                {"messages": [{"role": "user", "content": hotel_query}]}
+                {"messages": [{"role": "user", "content": hotel_query}]},
+                config= config
             )
             if isinstance(hotel_result, dict) and "messages" in hotel_result:
                 hotel_response = hotel_result["messages"][-1].content
@@ -314,7 +328,8 @@ class MultiAgentTripPlanner:
             print("📋 步骤4: 生成行程计划...")
             planner_query = self._build_planner_query(request, attraction_response, weather_response, hotel_response)
             planner_result = await self.planner_agent.ainvoke(
-                {"messages": [{"role": "user", "content": planner_query}]}
+                {"messages": [{"role": "user", "content": planner_query}]},
+                config=config
             )
             if isinstance(planner_result, dict) and "messages" in planner_result:
                 planner_response = planner_result["messages"][-1].content

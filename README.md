@@ -153,29 +153,12 @@ npm run dev
 
 ## 🔧 核心实现
 
-### HelloAgents Agent集成
+### Langchain1.x版本 Agent集成实现
 
 ```python
-from hello_agents import SimpleAgent, HelloAgentsLLM
-from hello_agents.tools import MCPTool
 
-# 创建高德地图MCP工具
-amap_tool = MCPTool(
-    name="amap",
-    server_command=["uvx", "amap-mcp-server"],
-    env={"AMAP_MAPS_API_KEY": "your_api_key"},
-    auto_expand=True
-)
+from langchain.agents import create_agent
 
-# 创建旅行规划Agent
-agent = SimpleAgent(
-    name="旅行规划助手",
-    llm=HelloAgentsLLM(),
-    system_prompt="你是一个专业的旅行规划助手..."
-)
-
-# 添加工具
-agent.add_tool(amap_tool)
 ```
 
 ### MCP工具调用
